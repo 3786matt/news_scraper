@@ -1,0 +1,17 @@
+body {
+  background-image: url("./images/cork-wallet.png");
+  }
+
+.jumbotron {
+  text-align: center;
+}
+
+.col-sm-4 {
+  height: 200px;
+  text-align: center;
+  /*border-style: dotted;
+  border-color: black;*/
+  /*padding: 100px;*/
+  /*margin:5px;*/
+}
+

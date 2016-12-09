@@ -1,5 +1,6 @@
 var express = require('express');
 var handleBars =  require('handleBars');
+var exphbs = require('express-handlebars');
 var app = express();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -17,9 +18,13 @@ app.use(bodyParser.urlencoded({
 // make public a static dir
 app.use(express.static('public'));
 
+//set view engine handlebars
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
 
 // Database configuration with mongoose
-mongoose.connect('mongodb://localhost/week18day3mongoose');
+mongoose.connect('mongodb://localhost/news_scraper');
 var db = mongoose.connection;
 
 // show any mongoose errors
@@ -43,16 +48,20 @@ var Article = require('./models/Article.js');
 
 // Simple index route
 app.get('/', function(req, res) {
-  res.send(index.html);
+  // res.send(index.html);
+  res.redirect('/scrape');
 });
 
 // A GET request to scrape the abcnews website.
 app.get('/scrape', function(req, res) {
+
   // first, we grab the body of the html with request
   request('http://www.abcnews.go.com/', function(error, response, html) {
     // then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
     console.log('line 54');
+
+
     // console.log(html);
     // now, we grab every h2 within an article tag, and do the following:
     // console.log($('li.story div h1 a'));
@@ -103,22 +112,38 @@ app.get('/scrape', function(req, res) {
   });
   // tell the browser that we finished scraping the text.
   res.send("Scrape Complete");
+  // res.render('main.handlebars');
 });
 
 // this will get the articles we scraped from the mongoDB
+// app.get('/articles', function(req, res){
+//   // grab every doc in the Articles array
+//   Article.find({}, function(err, doc){
+//     // log any errors
+//     if (err){
+//       console.log(err);
+//     } 
+//     // or send the doc to the browser as a json object
+//     else {
+//       res.json(doc);
+//     }
+//   });
+// });
+
 app.get('/articles', function(req, res){
-  // grab every doc in the Articles array
-  Article.find({}, function(err, doc){
-    // log any errors
-    if (err){
+
+  Article.find().sort({_id: -1})
+
+  .exec(function(err, doc){
+    if(err){
       console.log(err);
-    } 
-    // or send the doc to the browser as a json object
-    else {
-      res.json(doc);
     }
-  });
-});
+    else{
+      var hbsObject={articles: doc}
+      res.render('index', hbsObject);
+    }
+  })
+})
 
 // grab an article by it's ObjectId
 app.get('/articles/:id', function(req, res){

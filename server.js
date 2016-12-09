@@ -49,6 +49,7 @@ var Article = require('./models/Article.js');
 // Simple index route
 app.get('/', function(req, res) {
   // res.send(index.html);
+
   res.redirect('/scrape');
 });
 
@@ -61,10 +62,9 @@ app.get('/scrape', function(req, res) {
     var $ = cheerio.load(html);
     console.log('line 54');
 
-
-    // console.log(html);
+    var titles = [];
     // now, we grab every h2 within an article tag, and do the following:
-    // console.log($('li.story div h1 a'));
+    
     $('li.story div h1 a').each(function() {
         // li h1
         // save an empty result object
@@ -74,7 +74,6 @@ app.get('/scrape', function(req, res) {
         result.title = $(this).text().trim();
 
         result.link = $(this).attr('href');
-       
        
         console.log(result);
 
@@ -88,31 +87,16 @@ app.get('/scrape', function(req, res) {
             console.log(doc);
           }
         });
-        // result.link = $(this).children('a').attr('href');
-
         // using our Article model, create a new entry.
         // Notice the (result):
         // This effectively passes the result object to the entry (and the title and link)
-        // var entry = new Article (result);
-
         // // now, save that entry to the db
-        // entry.save(function(err, doc) {
-        //   // log any errors
-        //   if (err) {
-        //     console.log(err);
-        //   } 
-        //   // or log the doc
-        //   else {
-        //     console.log(doc);
-        //   }
-        // });
-
-
     });
   });
   // tell the browser that we finished scraping the text.
-  res.send("Scrape Complete");
+  // res.send("Scrape Complete");
   // res.render('main.handlebars');
+  res.redirect('/articles');
 });
 
 // this will get the articles we scraped from the mongoDB
@@ -146,7 +130,7 @@ app.get('/articles', function(req, res){
 })
 
 // grab an article by it's ObjectId
-app.get('/articles/:id', function(req, res){
+app.get('/articles/id', function(req, res){
   // using the id passed in the id parameter, 
   // prepare a query that finds the matching one in our db...
   Article.findOne({'_id': req.params.id})

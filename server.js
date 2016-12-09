@@ -24,7 +24,9 @@ app.set('view engine', 'handlebars');
 
 
 // Database configuration with mongoose
-mongoose.connect('mongodb://localhost/news_scraper');
+// mongoose.connect('mongodb://localhost/news_scraper');
+mongoose.connect('mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f');
+// My URI string which replaces 'mongodb://localhost/news_scraper' is: mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f
 var db = mongoose.connection;
 
 // show any mongoose errors
@@ -65,7 +67,7 @@ app.get('/scrape', function(req, res) {
     var titles = [];
     // now, we grab every h2 within an article tag, and do the following:
     
-    $('li.story div h1 a').each(function() {
+    $('li.wirestory div h1 a').each(function() {
         // li h1
         // save an empty result object
         var result = {};
@@ -77,43 +79,16 @@ app.get('/scrape', function(req, res) {
        
         console.log(result);
 
-        //code below checks to make sure the article is not already in the db.
-        //After a scrape it pushes the titles to the array 'titles'. 
-        //The indexOf property is used to see if the title (result.title) exists anywhere in the array.
-        //If it exists the title is set to true and fails the conditional logic
-        if(titles.indexOf(result.title) == true){
+        var entry = new Article(result);
 
-          titles.push(result.title);
-
-          Article.count({title: result.title}, function(err, newArt){
-            if(newArt == false){
-              var entry = new Article(result);
-                entry.save(function(err, doc){
-            if(err){
+        entry.save(function(err, doc){
+          if(err){
             console.log(err);
-            }
-            else{
+          }
+          else {
             console.log(doc);
           }
         });
-
-            }
-          })
-
-        // var entry = new Article(result);
-
-        // entry.save(function(err, doc){
-        //   if(err){
-        //     console.log(err);
-        //   }
-        //   else {
-        //     console.log(doc);
-        //   }
-        // });
-
-
-
-      };
         // using our Article model, create a new entry.
         // Notice the (result):
         // This effectively passes the result object to the entry (and the title and link)
@@ -127,20 +102,6 @@ app.get('/scrape', function(req, res) {
 });
 
 // this will get the articles we scraped from the mongoDB
-// app.get('/articles', function(req, res){
-//   // grab every doc in the Articles array
-//   Article.find({}, function(err, doc){
-//     // log any errors
-//     if (err){
-//       console.log(err);
-//     } 
-//     // or send the doc to the browser as a json object
-//     else {
-//       res.json(doc);
-//     }
-//   });
-// });
-
 app.get('/articles', function(req, res){
 
   Article.find().sort({_id: -1})
@@ -157,7 +118,7 @@ app.get('/articles', function(req, res){
 })
 
 // grab an article by it's ObjectId
-app.get('/articles/:id', function(req, res){
+app.get('/articles/id', function(req, res){
   // using the id passed in the id parameter, 
   // prepare a query that finds the matching one in our db...
   Article.findOne({'_id': req.params.id})
@@ -214,8 +175,8 @@ app.post('/articles/:id', function(req, res){
 
 
 
-
 // listen on port 3000
 app.listen(3000, function() {
   console.log('App running on port 3000!');
 });
+

@@ -8,9 +8,15 @@
     <div>
      <h4>{{link}}</h4>
     </div>
-      <button class="commentButton">Leave or View Comment</button>
-      {{!-- <button class="viewComment">View Comments</button> --}}
+    <div class="comments">
+    Comments:<br>
+    {{note}}
+    </div><br>
+    <input type="text" name="note" class="input"><br>
+      <button class="commentButton">Submit Comment</button>
   </div>
 </div>
+
+{{!-- <div class="comments" class="col-sm-6"></div> --}}
 
 {{/each}}

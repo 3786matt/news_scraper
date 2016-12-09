@@ -7,11 +7,31 @@ body {
 }
 
 .col-sm-4 {
-  height: 200px;
+  height: 300px;
   text-align: center;
   /*border-style: dotted;
   border-color: black;*/
   /*padding: 100px;*/
   /*margin:5px;*/
+}
+
+.input {
+  background-color: white;
+  height: 50px;
+  width: 100%;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  /*line-height: 2000%;*/
+}
+
+.comments {
+  width: 80%
+  height: 150px;
+  background-color: white;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+
 }
 

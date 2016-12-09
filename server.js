@@ -77,16 +77,43 @@ app.get('/scrape', function(req, res) {
        
         console.log(result);
 
-        var entry = new Article(result);
+        //code below checks to make sure the article is not already in the db.
+        //After a scrape it pushes the titles to the array 'titles'. 
+        //The indexOf property is used to see if the title (result.title) exists anywhere in the array.
+        //If it exists the title is set to true and fails the conditional logic
+        if(titles.indexOf(result.title) == true){
 
-        entry.save(function(err, doc){
-          if(err){
+          titles.push(result.title);
+
+          Article.count({title: result.title}, function(err, newArt){
+            if(newArt == false){
+              var entry = new Article(result);
+                entry.save(function(err, doc){
+            if(err){
             console.log(err);
-          }
-          else {
+            }
+            else{
             console.log(doc);
           }
         });
+
+            }
+          })
+
+        // var entry = new Article(result);
+
+        // entry.save(function(err, doc){
+        //   if(err){
+        //     console.log(err);
+        //   }
+        //   else {
+        //     console.log(doc);
+        //   }
+        // });
+
+
+
+      };
         // using our Article model, create a new entry.
         // Notice the (result):
         // This effectively passes the result object to the entry (and the title and link)
@@ -130,7 +157,7 @@ app.get('/articles', function(req, res){
 })
 
 // grab an article by it's ObjectId
-app.get('/articles/id', function(req, res){
+app.get('/articles/:id', function(req, res){
   // using the id passed in the id parameter, 
   // prepare a query that finds the matching one in our db...
   Article.findOne({'_id': req.params.id})

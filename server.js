@@ -26,6 +26,8 @@ app.set('view engine', 'handlebars');
 // Database configuration with mongoose
 mongoose.connect('mongodb://localhost/news_scraper');
 var db = mongoose.connection;
+// mongoose.connect('mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f');
+// My URI string which replaces 'mongodb://localhost/news_scraper' is: mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f
 
 // show any mongoose errors
 db.on('error', function(err) {
@@ -65,7 +67,7 @@ app.get('/scrape', function(req, res) {
     var titles = [];
     // now, we grab every h2 within an article tag, and do the following:
     
-    $('li.story div h1 a').each(function() {
+    $('li.wirestory div h1 a').each(function() {
         // li h1
         // save an empty result object
         var result = {};

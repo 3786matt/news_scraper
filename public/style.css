@@ -1,9 +1,16 @@
 body {
   background-image: url("./images/cork-wallet.png");
+
   }
 
 .jumbotron {
   text-align: center;
+  border-bottom-color: black;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  /*background-image: url("./images/newsimage.jpeg");*/
+  /*background-repeat: no-repeat;*/
+  /*background-size: cover;*/
 }
 
 .col-sm-4 {
@@ -29,3 +36,10 @@ border-bottom-style: solid;*/
 .input {
 width: 90%;
 }
+
+/*#time {
+  width: 10%;
+  height: 100px;
+  background-color: white;
+  float: right;
+}*/

@@ -119,25 +119,28 @@ app.get('/scrape', function(req, res) {
 app.get('/articles', function(req, res){
 
   Article.find().sort({_id: -1})
-
+//.populate('notes') == find articles above, then find the corresponding (by articlId) 
+// and populate/tack it on to the object
   .exec(function(err, doc){
     if(err){
       console.log(err);
     }
     else{
       var hbsObject={articles: doc}
+      // var hbsObject2={newNotes: title}
       res.render('index', hbsObject);
+      // res.render('index', hbsObject2);
     }
   })
 })
 
 // grab an article by it's ObjectId
-app.get('/articles/id', function(req, res){
+app.get('/articles/:id', function(req, res){
   // using the id passed in the id parameter, 
   // prepare a query that finds the matching one in our db...
   Article.findOne({'_id': req.params.id})
   // and populate all of the notes associated with it.
-  .populate('note')
+  .populate('notes')
   // now, execute our query
   .exec(function(err, doc){
     // log any errors
@@ -149,6 +152,8 @@ app.get('/articles/id', function(req, res){
       res.json(doc);
     }
   });
+
+  // console.log(article.notes.ref);
 });
 
 
@@ -156,28 +161,26 @@ app.get('/articles/id', function(req, res){
 // or if no note exists for an article, make the posted note it's note.
 app.post('/articles/:id', function(req, res){
   // create a new note and pass the req.body to the entry.
-  var newNote = new Note(req.body);
+  var newNote = new Note(req.body); // {"text":"submit comment view here"}
 
+  console.log(newNote.title);
   // and save the new note the db
   newNote.save(function(err, doc){
     // log any errors
     if(err){
       console.log(err);
-    } 
-    // otherwise
-    else {
+    } else {
       // using the Article id passed in the id parameter of our url, 
       // prepare a query that finds the matching Article in our db
-      // and update it to make it's lone note the one we just saved
-      Article.findOneAndUpdate({'_id': req.params.id}, {'note':doc._id})
-      // execute the above query
-      .exec(function(err, doc){
+      // and update it to make it's lone note the one we just saved      
+      Article.findOneAndUpdate({'_id': req.params.id}, { $push: { "notes": doc._id } }, { new: true }, function(err, doc) {          
         // log any errors
         if (err){
           console.log(err);
         } else {
           // or send the document to the browser
-          res.send(doc);
+          // res.send(doc);
+          res.redirect('/articles');
         }
       });
     }
@@ -194,3 +197,11 @@ app.post('/articles/:id', function(req, res){
 app.listen(3000, function() {
   console.log('App running on port 3000!');
 });
+
+
+// {
+//     "_id" : ObjectId("584c14dae59fb102a28702e3"),
+//     "title" : "Ohio Interstate Reopens After 50-Vehicle Pileup",
+//     "link" : "http://abcnews.go.com/Travel/wireStory/ohio-interstate-reopens-14-hours-50-vehicle-pileup-44087532",
+//     "__v" : 0
+// }

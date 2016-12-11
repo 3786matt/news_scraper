@@ -3,15 +3,22 @@
 <div>
   <div class='col-sm-4'>
     <div>
-     <h3>{{title}}</h3>
+     <a href="/articles/{{_id}}"><h3>{{title}}</h3></a>
     </div> 
     <div>
      <h4><p><a href="{{link}}">{{link}}</a></p></h4>
     </div><br>
-    <div class="commentBox">Comments:</div><br>
-    <input type="text" name="note" class="input"><br>
-      <br><button class="commentButton">Leave or View Comment</button>
-      {{!-- <button class="viewComment">View Comments</button> --}}
+    <div class="commentBox">
+    <p>Comments:</p>
+    <ul>
+      <li>{{notes}}</li>
+    </ul>
+    </div><br>
+      <form action="/articles/{{_id}}" method="POST">
+        <input type="text" name="title" class="input"><br>
+        <input type="text" name="body" class="input"><br>          
+        <input type="submit" class="commentButton">Leave or View Comment</input>          
+      </form>
   </div>
 </div>
 

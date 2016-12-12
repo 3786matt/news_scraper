@@ -127,6 +127,7 @@ app.get('/articles', function(req, res){
     }
     else{
       var hbsObject={articles: doc}
+      // var hbsObject2={notes: doc}
       // var hbsObject2={newNotes: title}
       res.render('index', hbsObject);
       // res.render('index', hbsObject2);
@@ -154,6 +155,7 @@ app.get('/articles/:id', function(req, res){
   });
 
   // console.log(article.notes.ref);
+  
 });
 
 

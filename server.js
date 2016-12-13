@@ -24,7 +24,8 @@ app.set('view engine', 'handlebars');
 
 
 // Database configuration with mongoose
-mongoose.connect('mongodb://localhost/news_scraper');
+// mongoose.connect('mongodb://localhost/news_scraper');
+mongoose.connect('mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f');
 var db = mongoose.connection;
 // mongoose.connect('mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f');
 // My URI string which replaces 'mongodb://localhost/news_scraper' is: mongodb://heroku_btbfbd6f:383sqddqj7o5pk1atr65adhcue@ds127958.mlab.com:27958/heroku_btbfbd6f
@@ -121,6 +122,7 @@ app.get('/articles', function(req, res){
   Article.find().sort({_id: -1})
 //.populate('notes') == find articles above, then find the corresponding (by articlId) 
 // and populate/tack it on to the object
+  .populate('notes')
   .exec(function(err, doc){
     if(err){
       console.log(err);
@@ -130,33 +132,34 @@ app.get('/articles', function(req, res){
       // var hbsObject2={notes: doc}
       // var hbsObject2={newNotes: title}
       res.render('index', hbsObject);
+      // res.json(hbsObject);
       // res.render('index', hbsObject2);
     }
   })
 })
 
-// grab an article by it's ObjectId
-app.get('/articles/:id', function(req, res){
-  // using the id passed in the id parameter, 
-  // prepare a query that finds the matching one in our db...
-  Article.findOne({'_id': req.params.id})
-  // and populate all of the notes associated with it.
-  .populate('notes')
-  // now, execute our query
-  .exec(function(err, doc){
-    // log any errors
-    if (err){
-      console.log(err);
-    } 
-    // otherwise, send the doc to the browser as a json object
-    else {
-      res.json(doc);
-    }
-  });
+// // grab an article by it's ObjectId
+// app.get('/articles/:id', function(req, res){
+//   // using the id passed in the id parameter, 
+//   // prepare a query that finds the matching one in our db...
+//   Article.findOne({'_id': req.params.id})
+//   // and populate all of the notes associated with it.
+//   .populate('notes')
+//   // now, execute our query
+//   .exec(function(err, doc){
+//     // log any errors
+//     if (err){
+//       console.log(err);
+//     } 
+//     // otherwise, send the doc to the browser as a json object
+//     else {
+//       res.json(doc);
+//     }
+//   });
 
-  // console.log(article.notes.ref);
+//   // console.log(article.notes.ref);
   
-});
+// });
 
 
 // replace the existing note of an article with a new one
@@ -188,6 +191,19 @@ app.post('/articles/:id', function(req, res){
     }
   });
 });
+
+app.post('delete/note/:id', function (req, res){
+
+  var noteId = req.params.id;
+
+  Comment.findByIdAndRemove(noteId, function(err, data){
+    if(err){
+      console.log(err);
+    }else{
+      console.log('Comment' + noteId + 'Deleted');
+    }
+    })
+  });
 
 
 

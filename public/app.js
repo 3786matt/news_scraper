@@ -5,6 +5,9 @@ $(document).ready(function(){
 
     console.log('button works');
   })
+  // $('.deleteButton').on('click', function(){
+  //   news_scraper.notes.remove();
+  // })
 
   
 })

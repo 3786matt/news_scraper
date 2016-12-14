@@ -1,5 +1,5 @@
 var express = require('express');
-var handleBars =  require('handleBars');
+// var handleBars =  require('handleBars');
 var exphbs = require('express-handlebars');
 var app = express();
 var mongoose = require('mongoose');

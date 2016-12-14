@@ -8,6 +8,7 @@ var cheerio = require('cheerio');
 var request = require('request');
 var morgan = require('morgan');
 var request = require('request');
+var PORT = process.env.PORT || 3000
 
 // use morgan and bodyparser with our app
 app.use(morgan('dev'));
@@ -212,7 +213,7 @@ app.post('delete/note/:id', function (req, res){
 
 
 // listen on port 3000
-app.listen(3000, function() {
+app.listen(PORT, function() {
   console.log('App running on port 3000!');
 });
 
